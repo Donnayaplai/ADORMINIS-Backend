@@ -1,37 +1,38 @@
-const pool = require("../db");
-const utilityQueries = require("../queries/utility");
+const GET_WATER_METERNO = (roomID) => {
+    return`
+    SELECT w.WATERNO FROM WATERMETER w 
+    WHERE ROOMID = "${roomID}"
+    ORDER BY w.METERDATE DESC, w.WMETERID DESC
+    LIMIT 1;
+    `
+}
 
-const getWaterMeterNo = async (roomID) => {
-  const getWaterMeterNo = await pool.query(
-    utilityQueries.GET_WATER_METERNO(roomID)
-  );
-  return getWaterMeterNo;
-};
+const GET_ELECTRICITY_METERNO = (roomID) => {
+    return`
+    SELECT e.ELECTRICITYNO FROM ELECTRICITYMETER e
+    WHERE ROOMID = "${roomID}"
+    ORDER BY e.ELECTRICITYNO DESC, e.EMETERID DESC
+    LIMIT 1;
+    `
+}
 
-const getElectricityMeterNo = async (roomID) => {
-  const getElectricityMeterNo = await pool.query(
-    utilityQueries.GET_ELECTRICITY_METERNO(roomID)
-  );
-  return getElectricityMeterNo;
-};
+const ADD_WATER_METERNO = (waterNo, meterDate, roomID) => {
+    return`
+    INSERT INTO	WATERMETER	(WATERNO, METERDATE, ROOMID)	
+    VALUES ("${waterNo}", "${meterDate}", "${roomID}");
+    `
+}
 
-const addWaterMeterNo = async (waterNo, meterDate, roomID) => {
-  const addWaterMeterNo = await pool.query(
-    utilityQueries.ADD_WATER_METERNO(waterNo, meterDate, roomID)
-  );
-  return addWaterMeterNo;
-};
+const ADD_ELECTRICITY_METERNO = (electricityNo, meterDate, roomID) => {
+    return`
+    INSERT INTO	ELECTRICITYMETER (ELECTRICITYNO, METERDATE, ROOMID)	
+    VALUES ("${electricityNo}", "${meterDate}", "${roomID}");
+    `
+}
 
-const addElectricityMeterNo = async (waterNo, meterDate, roomID) => {
-  const addElectricityMeterNo = await pool.query(
-    utilityQueries.ADD_ELECTRICITY_METERNO(waterNo, meterDate, roomID)
-  );
-  return addElectricityMeterNo;
-};
-
-const utilityModel = (module.exports = {
-  getWaterMeterNo,
-  getElectricityMeterNo,
-  addWaterMeterNo,
-  addElectricityMeterNo,
+const utilityQueries = (module.exports = {
+    GET_WATER_METERNO, 
+    GET_ELECTRICITY_METERNO, 
+    ADD_WATER_METERNO, 
+    ADD_ELECTRICITY_METERNO
 });
