@@ -1,24 +1,37 @@
 const utility = require('../model/Utility');
-const utility = new utility();
-const dormsettingModel = require('../model/Dormsetting');
-const dormsetting = new dormsettingModel();
+// const utility = new utilityModel();
+const dormsetting = require('../model/Dormsetting');
+// const dormsetting = new dormsettingModel();
 
-// exports.getElectricityPrice = async ()
-
-exports.utility = async (req, res, next) => {
+exports.calUtility = async (req, res, next) => {
     try {
-        var oldmeter = await utility.getElectricityMeterNo(roomID);
-        var newmeter;
-        var unitused;
-        var unitused;
-        var price;
+        const roomID = req.params.rooID;
+        let newmeter = req.params.meterNo;
 
-        if(oldmeter == null){
-            // addElectricityMeterNo ?
+        let oldmeter = utility.getElectricityMeterNo(roomID);
+        let calprice = dormsetting.getElectricityPrice(roomID);
+        let date = new Date();
+        let toDate = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate()
+        let unitused;
+        let price;
+
+        if (oldmeter == null) {
+            await utility.addElectricityMeterNo(newmeter, toDate, roomID);
+            await res.json(utility);
         } else if (oldmeter > newmeter) {
             newmeter += 9999
             unitused = newmeter - oldmeter
-            // addElectricityMeterNo ?
+            price = unitused * calprice
+            await utility.addElectricityMeterNo(unitused, toDate, roomID);
+            await res.json(price);
+        } else {
+            unitused = newmeter - oldmeter
+            price = unitused * calprice
+            await utility.addElectricityMeterNo(unitused, toDate, roomID);
+            await res.json(price);
         }
+    }
+    catch (err) {
+        console.log(err)
     }
 }
