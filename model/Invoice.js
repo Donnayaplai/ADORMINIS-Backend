@@ -1,5 +1,5 @@
 const pool = require("../db");
-const invoiceQueries = require("../queries/invoice");
+const invoiceQueries = require("./queries/invoice");
 
 const getInvoiceDate = async (roomID, month) => {
   const invoiceDate = await pool.query(
@@ -37,5 +37,5 @@ const invoiceModel = (module.exports = {
   getInvoiceTotalprice,
   getInvoiceID,
   getCost,
-  getSumCost,
+  getSumCost
 });

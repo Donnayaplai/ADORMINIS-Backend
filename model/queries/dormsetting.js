@@ -1,7 +1,10 @@
-const GET_ELECTRICITYPRICE = (dormID) => {
+const GET_ELECTRICITYPRICE = (roomID) => {
     return `
     SELECT ELECTRICITYPRICE FROM SETTING s
-    WHERE DORMID = "${dormID}";
+    JOIN DORMITORY d ON s.DORMID = d.DORMID 
+    JOIN BUILDING b ON d.DORMID = b.DORMID 
+    JOIN ROOM r ON b.BUILDINGID = r.BUILDINGID 
+    WHERE ROOMID = "${roomID}";
     `
 }
 

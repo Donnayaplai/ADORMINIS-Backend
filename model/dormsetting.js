@@ -1,5 +1,5 @@
 const pool = require("../db");
-const dormsettingQueries = require("../queries/dormsetting");
+const dormsettingQueries = require("./queries/dormsetting");
 
 const getElectricityPrice = async (dormID) => {
   const electricityPrice = await pool.query(dormsettingQueries.GET_ELECTRICITYPRICE(dormID));

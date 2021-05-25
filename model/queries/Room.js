@@ -1,3 +1,33 @@
+const GET_ALL_ROOM = (dormID) => {
+    return `
+    ((SELECT DISTINCT r.ROOMID, r.ROOMNO, "Available" AS STATUS
+    FROM ROOM r
+    LEFT JOIN RENT r2 ON r.ROOMID = r2.ROOMID 
+    JOIN BUILDING b ON r.BUILDINGID = b.BUILDINGID 
+    JOIN DORMITORY d ON b.DORMID = d.DORMID
+    WHERE d.DORMID = "${dormID}")
+    EXCEPT
+    (SELECT DISTINCT r.ROOMID, r.ROOMNO, "Available" AS STATUS
+    FROM ROOM r
+    LEFT JOIN RENT r2 ON r.ROOMID = r2.ROOMID 
+    JOIN BUILDING b ON r.BUILDINGID = b.BUILDINGID 
+    JOIN DORMITORY d ON b.DORMID = d.DORMID
+    WHERE d.DORMID = "${dormID}"
+    AND r2.CHECKINDATE  IS NOT NULL
+    AND r2.CHECKOUTDATE IS NULL))
+    UNION 
+    (SELECT DISTINCT r.ROOMID, r.ROOMNO, "Not Available" AS STATUS
+    FROM ROOM r
+    LEFT JOIN RENT r2 ON r.ROOMID = r2.ROOMID 
+    JOIN BUILDING b ON r.BUILDINGID = b.BUILDINGID 
+    JOIN DORMITORY d ON b.DORMID = d.DORMID
+    WHERE d.DORMID = "${dormID}"
+    AND r2.CHECKINDATE  IS NOT NULL
+    AND r2.CHECKOUTDATE IS NULL)
+    ORDER BY ROOMID;
+    `
+}
+
 const CHECK_ROOM_STATUS = (roomID) => {
     return `
     SELECT IF(r2.CHECKOUTDATE IS NULL, "Not Available", "Available") AS STATUS FROM ROOM r
@@ -61,19 +91,15 @@ const CREATE_CONTRACTOFRENT = (startDate, endDate, guaranteeFee, roomID) => {
 }
 
 const ADD_CONTRACTOFRENT_TO_RENT = (contractOfRentID, rentID) => {
-    return `
-    UPDATE RENT SET CONTRACTOFRENTID = "${contractOfRentID}"
-    WHERE RENTID = "${rentID}";
-    `
+    return `UPDATE RENT SET CONTRACTOFRENTID = "${contractOfRentID}" WHERE RENTID = "${rentID}";`
 }
 
 const GET_ROOMTYPE = () => {
-    return`
-    SELECT ROOMNAME, PRICE FROM ROOM_TYPE rt;
-    `
+    return `SELECT ROOMNAME, PRICE FROM ROOM_TYPE rt;`
 }
 
 const roomQueries = (module.exports = {
+    GET_ALL_ROOM,
     CHECK_ROOM_STATUS, 
     COUNT_TOTAL_ROOM, 
     COUNT_NOTAVAILABLE_ROOM, 
