@@ -1,5 +1,11 @@
 const pool = require("../db");
-const roomQueries = require("../queries/room");
+const roomQueries = require("./queries/room");
+
+const getAllRoom = async (dormID) => {
+  const rooms = await pool.query(roomQueries.GET_ALL_ROOM(dormID));
+  return rooms;
+};
+
 
 const checkRoomStatus = async (roomID) => {
   const roomStatus = await pool.query(roomQueries.CHECK_ROOM_STATUS(roomID));
@@ -44,7 +50,13 @@ const addCoRtoRent = async (contractOfRentID, rentID) => {
   return CoRtoRent;
 };
 
+const getRoomtype = async () => {
+  const roomtype = await pool.query(roomQueries.GET_ROOMTYPE());
+  return roomtype;
+};
+
 const roomModel = (module.exports = {
+  getAllRoom,
   checkRoomStatus,
   countTotalRoom,
   countNotAvailableRoom,
@@ -52,4 +64,5 @@ const roomModel = (module.exports = {
   addResident,
   createCoR,
   addCoRtoRent,
+  getRoomtype
 });
