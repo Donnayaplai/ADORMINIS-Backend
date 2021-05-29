@@ -10,6 +10,11 @@ const PORT = 3001;
 
 app.use(cors());
 app.use(express.json());
+
+const roomRouter = require("./routes/Room"); // Room API
+
+app.use("/room", roomRouter);
+
 // app.get("/", (req, res) => {
 //   res.send("hello");
 // });
