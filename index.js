@@ -10,9 +10,9 @@ const PORT = 3001;
 
 app.use(cors());
 app.use(express.json());
-app.get("/", (req, res) => {
-  res.send("hello");
-});
+// app.get("/", (req, res) => {
+//   res.send("hello");
+// });
 const pool = mariadb.createPool({
   host: "adorminis.cp1aphjaifpb.ap-southeast-1.rds.amazonaws.com",
   user: "admin",
@@ -40,27 +40,55 @@ app.post("/signup", (req, res) => {
   );
 });
 
-app.post("/login", (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
+// app.post("/login", (req, res) => {
+//   const email = req.body.email;
+//   const password = req.body.password;
+
+//   pool.query(
+//     `SELECT * FROM RESIDENT WHERE EMAIL = ? AND PASSWORD = ?;`,
+//     [email, password],
+//     (err, result) => {
+//       if (err) {
+//         res.send({ err: err });
+//       }
+//       if (result.length > 0) {
+//         res.send(result);
+//       } else {
+//         res.send({ message: "Wrong username/password" });
+//       }
+//     }
+//   );
+// });
+app.post("/dorminfo", (req, res) => {
+  const DormNameTH = req.body.DormNameTH;
+  const DormNameENG = req.body.DormNameENG;
+  const Address = req.body.Address;
+  const Street = req.body.Street;
+  const Subdistrict = req.body.Subdistrict;
+  const District = req.body.District;
+  const PostalCode = req.body.PostalCode;
+  const Province = req.body.Province;
 
   pool.query(
-    `SELECT * FROM RESIDENT WHERE EMAIL = ? AND PASSWORD = ?;`,
-    [email, password],
+    `INSERT INTO DORMITORY (DORMNAMETH, DORMNAMEENG, ADDRESS, STREET, SUBDISTRICT, DISTRICT, POSTCODE, PROVINCE) VALUES (?,?,?,?,?,?,?,?)`,
+    [
+      DormNameTH,
+      DormNameENG,
+      Address,
+      Street,
+      Subdistrict,
+      District,
+      PostalCode,
+      Province,
+    ],
     (err, result) => {
       if (err) {
-        res.send({ err: err });
-      }
-      if (result.length > 0) {
-        res.send(result);
+        console.log(err);
       } else {
-        res.send({ message: "Wrong username/password" });
+        res.send("Values Inserted"); //send message
       }
     }
   );
-});
-app.listen(PORT, () => {
-  console.log(`Server listening on ${PORT}`);
 });
 // app.use("/login", (req, res) => {
 //   res.send({
@@ -92,12 +120,12 @@ app.listen(PORT, () => {
 
 // const PORT = process.env.PORT || 3000;
 
-// app.listen(PORT, () => console.log(`server is running on port ${PORT}`));
+app.listen(PORT, () => console.log(`server is running on port ${PORT}`));
 
 // app.get("/", (req, res) => {
 //   res.send("hello");
 // });
 
-// app.listen(port, () => {
-//   console.log("app run at pool " + port);
+// app.listen(PORT, () => {
+//   console.log("app run at pool " + PORT);
 // });
